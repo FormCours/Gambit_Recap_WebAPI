@@ -1,0 +1,6 @@
+@Gambit.API_HostAddress = http://localhost:5107
+
+GET {{Gambit.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
