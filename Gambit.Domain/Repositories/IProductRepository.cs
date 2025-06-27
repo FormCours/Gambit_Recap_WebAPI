@@ -4,10 +4,10 @@ namespace Gambit.Domain.Repositories
 {
     public interface IProductRepository
     {
-        Product? Get(int id);
-        IEnumerable<Product> GetAll(int offset, int limit);
-        Product Create(Product product);
-        Product Update(Product product);
-        bool Delete(int id);
+        Task<Product?> GetAsync(int id);
+        IAsyncEnumerable<Product> GetAllAsync(int offset, int limit);
+        Task<Product> CreateAsync(Product product);
+        Task<Product> UpdateAsync(Product product);
+        Task<bool> DeleteAsync(int id);
     }
 }

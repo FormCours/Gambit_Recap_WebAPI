@@ -195,8 +195,10 @@ namespace Gambit.Infrastructure.Repositories
         };
         #endregion
 
-        public Product Create(Product product)
+        public async Task<Product> CreateAsync(Product product)
         {
+            await Task.Delay(1_000);
+
             if (Products.Any(p => string.Equals(p.Name, product.Name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ProductAlreadyExisteException();
@@ -219,25 +221,35 @@ namespace Gambit.Infrastructure.Repositories
             return productDB;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            int nbRow = Products.RemoveAll(p => p.Id == id);    
+            await Task.Delay(1_000);
+
+            int nbRow = Products.RemoveAll(p => p.Id == id);
             return nbRow > 0;
         }
 
-        public Product? Get(int id)
+        public async Task<Product?> GetAsync(int id)
         {
-            Product? product = Products.SingleOrDefault(p => p.Id == id);            
+            await Task.Delay(1_000);
+
+            Product? product = Products.SingleOrDefault(p => p.Id == id);
             return product;
         }
 
-        public IEnumerable<Product> GetAll(int offset, int limit)
+        public async IAsyncEnumerable<Product> GetAllAsync(int offset, int limit)
         {
-            return Products.Skip(offset).Take(limit);
+            foreach (var product in Products.Skip(offset).Take(limit))
+            {
+                await Task.Delay(100);
+                yield return product;
+            }
         }
 
-        public Product Update(Product product)
+        public async Task<Product> UpdateAsync(Product product)
         {
+            await Task.Delay(500);
+
             throw new NotImplementedException();
         }
     }

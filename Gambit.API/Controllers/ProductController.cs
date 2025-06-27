@@ -19,24 +19,28 @@ namespace Gambit.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetOne([FromRoute] int id)
+        public async Task<IActionResult> GetOne([FromRoute] int id)
         {
-            ProductOutput product = _productHandler.Get(id);
+            ProductOutput product = await _productHandler.GetAsync(id);
             return Ok(product);
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery]LimitOffsetParameters limitOffsetParameters)
+        public async Task<IActionResult> GetAll([FromQuery]LimitOffsetParameters limitOffsetParameters)
         {
-            IEnumerable<ProductListOutput> products = _productHandler.GetAll(limitOffsetParameters.Offset, limitOffsetParameters.Limit);
+            // IAsyncEnumerable pour renvoyé "IActionResult"
+            // - Utiliser "ToBlockingEnumerable()" pour la transformé en IEnumerable
+            // - Rendre la liste suspendable via le Nugget "System.Linq.Async" 
+
+            IEnumerable<ProductListOutput> products = await _productHandler.GetAllAsync(limitOffsetParameters.Offset, limitOffsetParameters.Limit).ToListAsync();
 
             return Ok(new
             {
                 count = products.Count(),
                 results = products
             });
+
+            // Pour faire du streaming de la liste, il faut renvoyer directement la IAsyncEnumerable
         }
-
-
     }
 }

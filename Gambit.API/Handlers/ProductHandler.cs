@@ -14,9 +14,9 @@ namespace Gambit.API.Handlers
             _repository = repository;
         }
 
-        public ProductOutput Get(int id)
+        public async Task<ProductOutput> GetAsync(int id)
         {
-            Product? product = _repository.Get(id);
+            Product? product = await _repository.GetAsync(id);
             if(product is null)
             {
                 throw new ProductNotFoundException();
@@ -25,12 +25,12 @@ namespace Gambit.API.Handlers
             return product.ToOutput();
         }
 
-        public IEnumerable<ProductListOutput> GetAll(int offset, int limit)
+        public async IAsyncEnumerable<ProductListOutput> GetAllAsync(int offset, int limit)
         {
-            IEnumerable<Product> products = _repository.GetAll(offset, limit);
-
-            //return products.Select(p => p.ToListOutput());
-            return products.Select(ProductMapper.ToListOutput);
+            await foreach (var product in _repository.GetAllAsync(offset, limit))
+            {
+                yield return ProductMapper.ToListOutput(product);
+            }
         }
     }
 }
