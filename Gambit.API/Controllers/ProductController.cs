@@ -2,6 +2,7 @@
 using Gambit.API.Contracts.Output;
 using Gambit.API.Handlers;
 using Gambit.Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace Gambit.API.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> GetOne([FromRoute] int id)
         {
             ProductOutput product = await _productHandler.GetAsync(id);
